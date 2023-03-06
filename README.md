@@ -20,7 +20,7 @@ Note: some youtube videos were not available when we downloaded the data, see th
 python CMGAN/enhanced_speech_cpu.py --test_dir /path/to/wavfiles/dir #if you use cpu
 python CMGAN/enhanced_speech_gpu.py --test_dir /path/to/wavfiles/dir #if you use gpu
 ```
-The enhanced signals will be saved in the ./Results/[dir]_en directory.
+The enhanced signals will be saved in the ./Results/{dir}\_en directory.
 
 See [CMGAN](https://github.com/ruizhecao96/CMGAN) for more details. 
 
@@ -50,6 +50,15 @@ e.g.
 MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n53.wav; N; A:3.500000; V:3.500000; D:3.500000;
 MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n36.wav; N; A:3.500000; V:3.500000; D:3.500000;
 ```
+
+Note: for each sample in the datalist, there must be a corresponsing enhanced signal with the same name in "{dir}\_en" directory
+
+For example:   
+MSP_train_noisy_en/MSP-PODCAST_0001_0002_snr6_n53.wav   
+#enhanced wav of "MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n53.wav"  
+
+MSP_train_noisy_en/MSP-PODCAST_0001_0002_snr6_n36.wav  
+#enhanced wav of "MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n36.wav"  
 
 ## Source code of NRSER
 
