@@ -51,8 +51,6 @@ MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n53.wav; N; A:3.500000; V:3.500000; D
 MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n36.wav; N; A:3.500000; V:3.500000; D:3.500000;
 ```
 
-See [txtfile]() as example. 
-
 ## Source code of NRSER
 
 Training:
@@ -73,7 +71,8 @@ python test_cpu.py --datadir ./samples --ckptdir emotion_model_v1_audioset-noise
 
 evaluation_metric.py # code to calculate Concordance Correlation Coefficient. 
 
-
+## Pretrain model
+[Google Drive](https://drive.google.com/drive/folders/12dTsiwFuPEu7n3tKJdSdko2-CfSvYlVz?usp=sharing) 
 
 ## Citation
 If you use the code in your research, please cite:  
@@ -84,5 +83,5 @@ Thanks :-)!
 * The NRSER work is released under MIT License. See LICENSE for more details.
 
 ## Acknowledgments
-* [Speech Lab] (http://www.cs.columbia.edu/speech/lab.cgi), CS, Columbia University, New York, United States
+* [Speech Lab](http://www.cs.columbia.edu/speech/lab.cgi), CS, Columbia University, New York, United States
 * [Bio-ASP Lab](https://bio-asplab.citi.sinica.edu.tw), CITI, Academia Sinica, Taipei, Taiwan
