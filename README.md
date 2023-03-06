@@ -55,16 +55,19 @@ See [txtfile]() as example.
 
 ## Source code of NRSER
 
-
+Training:
 ```
 python noise_model.py         #Training phase1: training of SNR-level detection block
 python emotion_model.py       #Training phase2: training of emotion recognition block
 python model_finetune.py     #Training phase3: fine-tuning the model
-
 ```
 
+Testing:
 ```
-python test.py 
+python test.py --datadir /path/to/test/wav --ckptdir /path/to/model/ckpt
+e.g.
+python test_gpu.py --datadir ./samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use gpu
+python test_cpu.py --datadir ./samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use cpu
 ```
 ## Evaluation code
 
