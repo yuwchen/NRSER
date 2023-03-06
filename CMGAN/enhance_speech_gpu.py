@@ -91,7 +91,7 @@ def evaluation(model_path, noisy_dir, save_tracks, saved_dir):
             enhance_one_track(model, noisy_path, saved_dir, 16000*2, n_fft, n_fft//4, save_tracks)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model_path", type=str, default='./best_ckpt/ckpt',
+parser.add_argument("--model_path", type=str, default='./CMGAN/best_ckpt/ckpt',
                     help="the path where the model is saved")
 parser.add_argument("--test_dir", type=str, default='dir to your VCTK-DEMAND test dataset',
                     help="noisy tracks dir to be enhanced")
