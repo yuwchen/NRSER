@@ -3,14 +3,14 @@ Code for the NRSER paper
 
 ## Dataset used in the study:
 
-Speech emotion recognition:
-[MSP-PODSCAST] (https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.4 (Feb 10, 2019) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
+Speech emotion recognition:  
+[MSP-PODSCAST](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.4 (Feb 10, 2019) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
 
-Background noise dataset:
+Background noise dataset:  
 [Audioset](https://research.google.com/audioset/)
-The training, validation, and testing wavfiles list are in audioset-train-80.txt, audioset-train-20.txt, audioset-val.txt.  
-The excluded labels of environmental noise experiment is in human_generated_noise.csv.  
-Note: some youtube videos were not available when we downloaded the data, see the above lists for the files that used in this study.   
+The training, validation, and testing wavfiles list are in audioset-train-80.txt, audioset-train-20.txt, audioset-val.txt.   
+The excluded labels of environmental noise experiment is in human_generated_noise.csv.   
+Note: some youtube videos were not available when we downloaded the data, see the above lists for the files that used in this study.    
 
 ## Data preprocessing
 
@@ -80,9 +80,9 @@ e.g.
 python test_gpu.py --datadir ./samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use gpu
 python test_cpu.py --datadir ./samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use cpu
 ```
-## Evaluation code
 
-evaluation_metric.py # code to calculate Concordance Correlation Coefficient. 
+## Evaluation code
+evaluation_metric.py # to calculate Concordance Correlation Coefficient. 
 
 ## Pretrain model
 [Google Drive](https://drive.google.com/drive/folders/12dTsiwFuPEu7n3tKJdSdko2-CfSvYlVz?usp=sharing) 
