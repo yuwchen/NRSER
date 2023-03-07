@@ -1,0 +1,73 @@
+index,mid,display_name
+0,/m/09x0r,Speech
+1,/m/05zppz,"Male speech, man speaking"
+2,/m/02zsn,"Female speech, woman speaking"
+3,/m/0ytgt,"Child speech, kid speaking"
+4,/m/01h8n0,Conversation
+5,/m/02qldy,"Narration, monologue"
+6,/m/0261r1,Babbling
+7,/m/0brhx,Speech synthesizer
+8,/m/07p6fty,Shout
+9,/m/07q4ntr,Bellow
+10,/m/07rwj3x,Whoop
+11,/m/07sr1lc,Yell
+12,/m/04gy_2,Battle cry
+13,/t/dd00135,Children shouting
+14,/m/03qc9zr,Screaming
+15,/m/02rtxlg,Whispering
+16,/m/01j3sz,Laughter
+17,/t/dd00001,Baby laughter
+18,/m/07r660_,Giggle
+19,/m/07s04w4,Snicker
+20,/m/07sq110,Belly laugh
+21,/m/07rgt08,"Chuckle, chortle"
+22,/m/0463cq4,"Crying, sobbing"
+23,/t/dd00002,"Baby cry, infant cry"
+24,/m/07qz6j3,Whimper
+25,/m/07qw_06,"Wail, moan"
+26,/m/07plz5l,Sigh
+27,/m/015lz1,Singing
+28,/m/0l14jd,Choir
+29,/m/01swy6,Yodeling
+30,/m/02bk07,Chant
+31,/m/01c194,Mantra
+32,/t/dd00003,Male singing
+33,/t/dd00004,Female singing
+34,/t/dd00005,Child singing
+35,/t/dd00006,Synthetic singing
+36,/m/06bxc,Rapping
+37,/m/02fxyj,Humming
+38,/m/07s2xch,Groan
+39,/m/07r4k75,Grunt
+40,/m/01w250,Whistling
+41,/m/0lyf6,Breathing
+42,/m/07mzm6,Wheeze
+43,/m/01d3sd,Snoring
+44,/m/07s0dtb,Gasp
+45,/m/07pyy8b,Pant
+46,/m/07q0yl5,Snort
+47,/m/01b_21,Cough
+48,/m/0dl9sf8,Throat clearing
+49,/m/01hsr_,Sneeze
+50,/m/07ppn3j,Sniff
+51,/m/06h7j,Run
+52,/m/07qv_x_,Shuffle
+53,/m/07pbtc8,"Walk, footsteps"
+54,/m/03cczk,"Chewing, mastication"
+55,/m/07pdhp0,Biting
+56,/m/0939n_,Gargling
+57,/m/01g90h,Stomach rumble
+58,/m/03q5_w,"Burping, eructation"
+59,/m/02p3nc,Hiccup
+60,/m/02_nn,Fart
+61,/m/0k65p,Hands
+62,/m/025_jnm,Finger snapping
+63,/m/0l15bq,Clapping
+64,/m/01jg02,"Heart sounds, heartbeat"
+65,/m/01jg1z,Heart murmur
+66,/m/053hz1,Cheering
+67,/m/028ght,Applause
+68,/m/07rkbfh,Chatter
+69,/m/03qtwd,Crowd
+70,/m/07qfr4h,"Hubbub, speech noise, speech babble"
+71,/t/dd00013,Children playing
