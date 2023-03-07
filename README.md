@@ -20,7 +20,7 @@ Note: some youtube videos were not available when we downloaded the data, see th
 python CMGAN/enhanced_speech_cpu.py --test_dir /path/to/wavfiles/dir #if you use cpu
 python CMGAN/enhanced_speech_gpu.py --test_dir /path/to/wavfiles/dir #if you use gpu
 ```
-The enhanced signals will be saved in the ./Results/{dir}\_en directory.
+The enhanced signals will be saved in the ./data/{dir}\_en directory.
 
 See [CMGAN](https://github.com/ruizhecao96/CMGAN) for more details. 
 
