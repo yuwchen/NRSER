@@ -1,0 +1,4 @@
+audio_noisy/noisy_sampleA.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio_noisy/noisy_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio/clean_sampleA.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio/clean_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;

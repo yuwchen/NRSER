@@ -1,0 +1,4 @@
+audio/clean_sampleA.wav; 1
+audio/clean_sampleB.wav; 1
+noise/_-lXVZ9QpO8.wav; 0
+noise/_0bOQtWbqVc.wav; 0
