@@ -58,11 +58,11 @@ audio/clean_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;
 Note: for each sample in the datalist, there must be a corresponsing enhanced signal with the same name in "{dir}\_en" directory
 
 For example:   
-MSP_train_noisy_en/MSP-PODCAST_0001_0002_snr6_n53.wav   
-#enhanced wav of "MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n53.wav"  
+audio_noisy_en/noisy_sampleA.wav 
+#enhanced wav of "audio_noisy/noisy_sampleA.wav"  
 
-MSP_train_noisy_en/MSP-PODCAST_0001_0002_snr6_n36.wav  
-#enhanced wav of "MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n36.wav"  
+audio_en/clean_sampleA.wav
+#enhanced wav of "audio/clean_sampleA.wav"  
 
 ## Source code of NRSER
 
