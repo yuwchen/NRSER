@@ -1,7 +1,7 @@
 # NRSER
 Code for the NRSER paper
 
-## Dataset used in the study:
+## Dataset:
 
 Speech emotion recognition:  
 [MSP-PODSCAST](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.4 (Feb 10, 2019) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
