@@ -34,8 +34,10 @@ For SNR-level detection:
 wavpath_1; snr_level_1
 wavpath_2; snr_level_2
 e.g.
-audio/MSP-PODCAST_0001; 1
-Audioset-train-80; 0
+audio/clean_sampleA.wav; 1
+audio/clean_sampleB.wav; 1
+noise/_-lXVZ9QpO8.wav; 0
+noise/_0bOQtWbqVc.wav; 0
 ```
 Note: a sample that all values are 0 will cause error during training.  
  
@@ -47,8 +49,10 @@ For emotion recognition:
 wavpath_1; emotion_category_1; A:arousal_1; V:valence_1; D:dominance_1;
 wavpath_2; emotion_category_2; A:arousal_2; V:valence_2; D:dominance_2;
 e.g. 
-MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n53.wav; N; A:3.500000; V:3.500000; D:3.500000;
-MSP_train_noisy/MSP-PODCAST_0001_0002_snr6_n36.wav; N; A:3.500000; V:3.500000; D:3.500000;
+audio_noisy/noisy_sampleA.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio_noisy/noisy_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio/clean_sampleA.wav; N; A:4.500000; V:4.500000; D:5.000000;
+audio/clean_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;
 ```
 
 Note: for each sample in the datalist, there must be a corresponsing enhanced signal with the same name in "{dir}\_en" directory
