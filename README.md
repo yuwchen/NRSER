@@ -3,11 +3,11 @@ Code for the NRSER paper
 
 ## Dataset:
 
-Speech emotion recognition:  
+Speech emotion dataset:  
 [MSP-PODSCAST](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.4 (Feb 10, 2019) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
 
 Background noise dataset:  
-[Audioset](https://research.google.com/audioset/)
+[Audioset](https://research.google.com/audioset/)  
 The training, validation, and testing wavfiles list are in audioset-train-80.txt, audioset-train-20.txt, audioset-val.txt.   
 The excluded labels of environmental noise experiment is in human_generated_noise.csv.   
 Note: some youtube videos were not available when we downloaded the data, see the above lists for the files that used in this study.    
