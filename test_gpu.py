@@ -110,7 +110,7 @@ def main():
     
 
     print('Starting prediction')
-    for filepath in tqdm(validset[:10]):
+    for filepath in tqdm(validset):
         
         with torch.no_grad():
             filename = filepath.split("/")[-1]
