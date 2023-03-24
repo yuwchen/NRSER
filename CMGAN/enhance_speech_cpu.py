@@ -100,5 +100,5 @@ args = parser.parse_args()
 
 
 if __name__ == '__main__':
-    save_dir = os.path.join('./Results',args.test_dir.split(os.sep)[-1]+'_en')
+    save_dir = os.path.join('./data',args.test_dir.split(os.sep)[-1]+'_en')
     evaluation(args.model_path, args.test_dir, args.save_tracks, save_dir)
