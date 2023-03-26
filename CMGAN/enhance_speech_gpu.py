@@ -19,6 +19,12 @@ def creat_dir(directory):
 def enhance_one_track(model, audio_path, saved_dir, cut_len, n_fft=400, hop=100, save_tracks=False):
     name = os.path.split(audio_path)[-1]
     noisy, sr = torchaudio.load(audio_path)
+    
+    if sr!=16000:
+        transform = torchaudio.transforms.Resample(sr, 16000)
+        noisy = transform(noisy)
+        sr = 16000
+
     assert sr == 16000
     seg_length = 2*sr
     wav_len = noisy.size(-1)
@@ -101,5 +107,5 @@ args = parser.parse_args()
 
 
 if __name__ == '__main__':
-    save_dir = os.path.join('./',args.test_dir.split(os.sep)[-1]+'_en')
+    save_dir = os.path.join('./data',args.test_dir.split(os.sep)[-1]+'_en')
     evaluation(args.model_path, args.test_dir, args.save_tracks, save_dir)
