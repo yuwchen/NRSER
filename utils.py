@@ -1,6 +1,24 @@
 import torch
 import torch.nn as nn
 
+def ccc_loss(y_true, y_pred):
+ 
+    merge = torch.cat((y_true.unsqueeze(1).T, y_pred.unsqueeze(1).T),0)
+    cor = torch.corrcoef(merge)[0][1]
+ 
+    mean_true = torch.mean(y_true)
+    mean_pred = torch.mean(y_pred)
+ 
+    var_true = torch.var(y_true, unbiased=False)
+    var_pred = torch.var(y_pred, unbiased=False)
+ 
+    sd_true = torch.std(y_true, unbiased=False)
+    sd_pred = torch.std(y_pred, unbiased=False)
+ 
+    numerator = 2 * cor * sd_true * sd_pred
+    denominator = var_true + var_pred + (mean_true - mean_pred) ** 2
+
+    return numerator / denominator
 
 def wav_conversion(wav, n_fft, hop):
     original_shape = wav.shape
