@@ -13,7 +13,7 @@ from utils import *
 from SEmodels import generator
 from emotion_model import EmotionPredictor
 from enhancement_model import SpeechEnhancement
-from noise_model import SNRLevelDetection
+from snr_model import SNRLevelDetection
 
 gc.collect()
 torch.cuda.empty_cache()
@@ -140,7 +140,7 @@ def main():
             pred_c = label_map[np.argmax(score_C)]
 
             torch.cuda.empty_cache()
-            output = "{}; {}; A:{}; V:{}; D:{}, {}, {}".format(filename, pred_c, score_A, score_V, score_D,str(list(score_C)), snr_level_score)
+            output = "{}; {}; A:{}; V:{}; D:{}; {}; S:{}".format(filename, pred_c, score_A, score_V, score_D,str(list(score_C)), snr_level_score)
             prediction.write(output+'\n')
  
 
