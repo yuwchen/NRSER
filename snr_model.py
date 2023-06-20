@@ -62,8 +62,8 @@ def main():
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'MSP-train-with-noise-audioset.txt')
-    validlist = os.path.join(txtfiledir, 'MSP-dev-with-noise-audioset.txt')
+    trainlist = os.path.join(txtfiledir, 'noise_train.txt')
+    validlist = os.path.join(txtfiledir, 'noise_val.txt')
 
     N_FFT = 400
     HOP = 100
