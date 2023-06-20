@@ -51,8 +51,8 @@ def main():
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'MSP-train-noisy-with-clean.txt')
-    validlist = os.path.join(txtfiledir, 'MSP-dev-noisy-with-clean-small.txt')
+    trainlist = os.path.join(txtfiledir, 'emotion_train.txt')
+    validlist = os.path.join(txtfiledir, 'emotion_val.txt')
 
 
     trainset = MyDataset(wavdir, trainlist)
@@ -60,8 +60,8 @@ def main():
     validset = MyDataset(wavdir, validlist)
     validloader = DataLoader(validset, batch_size=8, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
 
-    trainlist_n = os.path.join(txtfiledir, 'MSP-train-with-noise-audioset.txt')
-    validlist_n = os.path.join(txtfiledir, 'MSP-dev-with-noise-audioset.txt')
+    trainlist_n = os.path.join(txtfiledir, 'noise_train.txt')
+    validlist_n = os.path.join(txtfiledir, 'noise_val.txt')
 
     trainset_n = MyNoiseDataset(wavdir, trainlist_n)
     trainloader_n = DataLoader(trainset_n, batch_size=32, shuffle=True, num_workers=2, collate_fn=trainset_n.collate_fn)
