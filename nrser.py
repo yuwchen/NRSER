@@ -12,22 +12,23 @@ from utils import *
 from SEmodels import generator
 import torch.nn.functional as F
 from dataloader import MyDataset, MyNoiseDataset
-from emotion_model import EmotionPredictor
-from noise_model import SNRLevelDetection
+from emotion_model_s import EmotionPredictor
+from snr_model import SNRLevelDetection
 from enhancement_model import SpeechEnhancement
 
 random.seed(1984)
     
+
 def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--datadir', default='./data',  type=str, help='Path of your DATA/ directory')
     parser.add_argument('--txtfiledir', default='./txtfile',  type=str, help='Path of your training and validation list directory')
-    parser.add_argument('--fairseq_base_model', default='./fairseq/hubert_base_ls960.pt', type=str, help='Path to pretrained fairseq base model')
+    parser.add_argument('--fairseq_base_model', default='../pronunciation/fairseq/hubert_base_ls960.pt', type=str, help='Path to pretrained fairseq base model')
     parser.add_argument('--finetune_from_checkpoint', type=str, required=False, help='Path to your checkpoint to finetune from')
     parser.add_argument('--pretrained_model_emotion', default='', type=str, required=False, help='Path to your Emotion model directory')
-    parser.add_argument('--pretrained_model_noise', default='', type=str, required=False, help='Path to your SNR-level detection model directory')
-    parser.add_argument('--cmgan_model_path', default='./CMGAN/best_ckpt/ckpt', type=str)
+    parser.add_argument('--pretrained_model_snr', default='', type=str, required=False, help='Path to your SNR-level detection model directory')
+    parser.add_argument('--cmgan_model_path', default='../CMGAN-main/src/best_ckpt/ckpt', type=str)
 
     args = parser.parse_args()
 
@@ -37,30 +38,30 @@ def main():
     my_checkpoint_dir = args.finetune_from_checkpoint
     SE_model_path = args.cmgan_model_path
     pretrained_model_emotion = args.pretrained_model_emotion
-    pretrained_model_noise = args.pretrained_model_noise
-    ckptdir = os.path.basename(pretrained_model_emotion)+'-'+os.path.basename(pretrained_model_noise)
+    pretrained_model_snr = args.pretrained_model_snr
+    ckptdir = os.path.basename(pretrained_model_emotion)+'-'+os.path.basename(pretrained_model_snr)
 
 
     if not os.path.exists(ckptdir):
         os.makedirs(os.path.join(ckptdir,'SE'))
         os.makedirs(os.path.join(ckptdir,'EMO'))
-        os.makedirs(os.path.join(ckptdir,'NOISE'))
+        os.makedirs(os.path.join(ckptdir,'SNR'))
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'emotion_train.txt')
-    validlist = os.path.join(txtfiledir, 'emotion_val.txt')
+    trainlist = os.path.join(txtfiledir, 'MSP-train-noisy-with-clean.txt')
+    validlist = os.path.join(txtfiledir, 'MSP-dev-noisy-with-clean-small.txt')
 
 
     trainset = MyDataset(wavdir, trainlist)
-    trainloader = DataLoader(trainset, batch_size=2, shuffle=True, num_workers=2, collate_fn=trainset.collate_fn)
+    trainloader = DataLoader(trainset, batch_size=8, shuffle=True, num_workers=2, collate_fn=trainset.collate_fn)
     validset = MyDataset(wavdir, validlist)
-    validloader = DataLoader(validset, batch_size=2, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
+    validloader = DataLoader(validset, batch_size=8, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
 
-    trainlist_n = os.path.join(txtfiledir, 'noise_train.txt')
-    validlist_n = os.path.join(txtfiledir, 'noise_val.txt')
+    trainlist_n = os.path.join(txtfiledir, 'MSP-train-with-noise-audioset.txt')
+    validlist_n = os.path.join(txtfiledir, 'MSP-dev-with-noise-audioset.txt')
 
     trainset_n = MyNoiseDataset(wavdir, trainlist_n)
     trainloader_n = DataLoader(trainset_n, batch_size=32, shuffle=True, num_workers=2, collate_fn=trainset_n.collate_fn)
@@ -91,22 +92,21 @@ def main():
     emo_net.load_state_dict(torch.load(os.path.join(pretrained_model_emotion,'EMO'+os.sep+'best')))
     emo_net = emo_net.to(device)
 
-    noise_net =  SNRLevelDetection(N_FFT, HOP)
-    noise_net = noise_net.to(device)
+    snr_net =  SNRLevelDetection(N_FFT, HOP)
+    snr_net = snr_net.to(device)
     #load pretrained noise detection model
-    noise_net.load_state_dict(torch.load(os.path.join(pretrained_model_noise,'NOISE'+os.sep+'best')))
+    snr_net.load_state_dict(torch.load(os.path.join(pretrained_model_snr,'SNR'+os.sep+'best')))
 
     if my_checkpoint_dir != None:  ## do (further) finetuning
-        noise_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'NOISE','best')))
+        snr_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'SNR','best')))
         se_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'SE','best')))
         emo_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'EMO','best')))
 
     #only train finetune emotion and noise detection model
-    criterion_L1 = nn.L1Loss()
     criterion_cross = nn.CrossEntropyLoss()
     criterion_mse = nn.MSELoss()
     optimizer_emo = optim.SGD( emo_net.parameters(), lr=0.0001, momentum=0.9)
-    optimizer_noise = optim.SGD( noise_net.parameters(), lr=0.0001, momentum=0.9)
+    optimizer_noise = optim.SGD( snr_net.parameters(), lr=0.0001, momentum=0.9)
     relu = nn.ReLU()
     
     PREV_VAL_LOSS=9999999999
@@ -116,7 +116,7 @@ def main():
     for epoch in range(1,1001):
         STEPS=0
         emo_net.train()
-        noise_net.train()
+        snr_net.train()
         running_loss = 0.0
 
         for i, data in enumerate(tqdm(trainloader), 0):
@@ -134,18 +134,18 @@ def main():
             optimizer_noise.zero_grad()
             optimizer_emo.zero_grad()
 
-            S = noise_net(inputs, inputs_en)        
+            S = snr_net(inputs, inputs_en)        
             snr_level_score = torch.clamp(S, min=0., max=1.)
             emo_input = (inputs_en*(1-snr_level_score) + inputs*snr_level_score)
             output_A, output_V, output_D, output_C = emo_net(emo_input)
 
 
-            loss_A = criterion_L1(output_A, scores_A)
-            loss_V = criterion_L1(output_V, scores_V)
-            loss_D = criterion_L1(output_D, scores_D)
+            loss_A = ccc_loss(output_A, scores_A)
+            loss_V = ccc_loss(output_V, scores_V)
+            loss_D = ccc_loss(output_D, scores_D)
             loss_C = criterion_cross(output_C, scores_C)
 
-            loss = loss_A + loss_V + loss_D + loss_C
+            loss = loss_C + 1 - (loss_A + loss_V + loss_D )/3
 
             loss.backward()
             optimizer_emo.step()
@@ -160,7 +160,7 @@ def main():
             inputs = inputs.squeeze(1)  
             inputs_en = inputs_en.squeeze(1)  
             optimizer_noise.zero_grad()
-            noise_level = noise_net(inputs, inputs_en)
+            noise_level = snr_net(inputs, inputs_en)
             loss = criterion_mse(noise_level, scores_level)
         
             loss.backward()
@@ -176,7 +176,7 @@ def main():
         epoch_val_loss = 0.0
 
         emo_net.eval()
-        noise_net.eval()
+        snr_net.eval()
         ## clear memory to avoid OOM
         with torch.cuda.device(device):
             torch.cuda.empty_cache()
@@ -196,15 +196,17 @@ def main():
             inputs_en = inputs_en.squeeze(1)
 
             with torch.no_grad(): 
-                S = noise_net(inputs, inputs_en)   
+                S = snr_net(inputs, inputs_en)   
                 snr_level_score = torch.clamp(S, min=0., max=1.)
                 emo_input = (inputs_en*(1-snr_level_score) + inputs*(snr_level_score))
                 output_A, output_V, output_D, output_C = emo_net(emo_input)
-                loss_A = criterion_L1(output_A, scores_A)
-                loss_V = criterion_L1(output_V, scores_V)
-                loss_D = criterion_L1(output_D, scores_D)
+                loss_A = ccc_loss(output_A, scores_A)
+                loss_V = ccc_loss(output_V, scores_V)
+                loss_D = ccc_loss(output_D, scores_D)
                 loss_C = criterion_cross(output_C, scores_C)
-                loss = loss_A + loss_V + loss_D + loss_C
+
+                loss = loss_C + 1 - (loss_A + loss_V + loss_D )/3
+                
                 epoch_val_loss += loss.item()
         
         for i, data in enumerate(validloader_n, 0):
@@ -217,7 +219,7 @@ def main():
             inputs_en = inputs_en.squeeze(1)
 
             with torch.no_grad(): 
-                noise_level = noise_net(inputs, inputs_en)
+                noise_level = snr_net(inputs, inputs_en)
                 loss = criterion_mse(noise_level, scores_level)
                 epoch_val_loss += loss.item()
 
@@ -227,7 +229,7 @@ def main():
             print('Loss has decreased')
             PREV_VAL_LOSS=avg_val_loss
             torch.save(emo_net.state_dict(), os.path.join(ckptdir,'EMO','best'))
-            torch.save(noise_net.state_dict(), os.path.join(ckptdir,'NOISE','best'))
+            torch.save(snr_net.state_dict(), os.path.join(ckptdir,'SNR','best'))
             patience = orig_patience
         else:
             patience-=1
