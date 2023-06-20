@@ -4,7 +4,7 @@ Code for the NRSER paper
 ## Dataset:
 
 Speech emotion dataset:  
-[MSP-PODSCAST](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.4 (Feb 10, 2019) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
+[MSP-PODSCAST](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Podcast.html) Database Release 1.10 (May 3, 2022) from The University of Texas at Dallas, Multimodal Signal Processing (MSP) Laboratory
 
 Background noise dataset:  
 [Audioset](https://research.google.com/audioset/)  
@@ -55,7 +55,7 @@ audio/clean_sampleA.wav; N; A:4.500000; V:4.500000; D:5.000000;
 audio/clean_sampleB.wav; N; A:4.500000; V:4.500000; D:5.000000;
 ```
 
-Note: for each sample in the datalist, there must be a corresponsing enhanced signal with the same name in "{dir}\_en" directory
+Note: for each sample in the datalist, there must be a corresponding enhanced signal with the same name in "{dir}\_en" directory
 
 For example:   
 audio_noisy_en/noisy_sampleA.wav 
@@ -68,16 +68,23 @@ audio_en/clean_sampleA.wav
 
 Training:
 ```
-python noise_model.py         #Training phase1: training of SNR-level detection block
+python snr_model.py           #Training phase1: training of SNR-level detection block
 python emotion_model.py       #Training phase2: training of emotion recognition block
-python model_finetune.py     #Training phase3: fine-tuning the model
+python nrser.py               #Training phase3: fine-tuning the model
 ```
 
-Testing:
+Testing - emotion recognition:
 ```
 e.g.
-python test_gpu.py --datadir ./test_samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use gpu
-python test_cpu.py --datadir ./test_samples --ckptdir emotion_model_v1_audioset-noise_model_v1_audioset-f16 #if you use cpu
+python test_gpu.py --datadir ./test_samples --ckptdir emotion_model_s2_ccc2_r1-snr_model_r1 #if you use gpu
+python test_cpu.py --datadir ./test_samples --ckptdir emotion_model_s2_ccc2_r1-snr_model_r1 #if you use cpu
+```
+
+Testing - SNR level detection (use the SNR-level detector without fine-tuning with emotion recognition.)
+```
+e.g.
+python test_snr.py --datadir ./test_samples --ckptdir snr_model_r1 
+
 ```
 
 ## Evaluation code
