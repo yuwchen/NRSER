@@ -63,8 +63,8 @@ def main():
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'MSP-train-noisy-with-clean.txt')
-    validlist = os.path.join(txtfiledir, 'MSP-dev-noisy-with-clean-small.txt')
+    trainlist = os.path.join(txtfiledir, 'emotion_train.txt')
+    validlist = os.path.join(txtfiledir, 'emotion_val.txt')
 
     SSL_OUT_DIM = 768
 
