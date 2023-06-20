@@ -38,13 +38,13 @@ class EmotionPredictor(nn.Module):
         
         return output_A.squeeze(1), output_V.squeeze(1), output_D.squeeze(1), output_C
 
-    
+
 def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--datadir', default='./data',  type=str, help='Path to root data directory')
     parser.add_argument('--txtfiledir', default='./txtfile',  type=str, help='Path to training txt directory')
-    parser.add_argument('--fairseq_base_model', default='./fairseq/hubert_base_ls960.pt', type=str, help='Path to pretrained fairseq base model')
+    parser.add_argument('--fairseq_base_model', default='../pronunciation/fairseq/hubert_base_ls960.pt', type=str, help='Path to pretrained fairseq base model')
     parser.add_argument('--finetune_from_checkpoint', type=str, required=False, help='Path to the checkpoint to finetune from')
     parser.add_argument('--outdir', type=str, required=False, default='emotion_model', help='Output directory for your trained checkpoints')
 
@@ -63,8 +63,8 @@ def main():
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'MSP-train-noisy-with-clean-audioset.txt')
-    validlist = os.path.join(txtfiledir, 'MSP-val-noisy-with-clean-audioset.txt')
+    trainlist = os.path.join(txtfiledir, 'MSP-train-noisy-with-clean.txt')
+    validlist = os.path.join(txtfiledir, 'MSP-dev-noisy-with-clean-small.txt')
 
     SSL_OUT_DIM = 768
 
@@ -72,9 +72,9 @@ def main():
     ssl_model = model[0]
     
     trainset = MyDataset(wavdir, trainlist)
-    trainloader = DataLoader(trainset, batch_size=2, shuffle=True, num_workers=2, collate_fn=trainset.collate_fn)
+    trainloader = DataLoader(trainset, batch_size=8, shuffle=True, num_workers=2, collate_fn=trainset.collate_fn)
     validset = MyDataset(wavdir, validlist)
-    validloader = DataLoader(validset, batch_size=2, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
+    validloader = DataLoader(validset, batch_size=8, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
 
     emo_net = EmotionPredictor(ssl_model, SSL_OUT_DIM)
     emo_net = emo_net.to(device)
@@ -82,12 +82,11 @@ def main():
     if my_checkpoint_dir != None:  ## do (further) finetuning
         emo_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'EMO','best')))
 
-    criterion_L1 = nn.L1Loss() #for AVD prediction
     criterion_cross = nn.CrossEntropyLoss() #for categorical emotion prediction
     optimizer_emo = optim.SGD( emo_net.parameters(), lr=0.0001, momentum=0.9)
 
     PREV_VAL_LOSS=9999999999
-    orig_patience=5
+    orig_patience=2
     patience=orig_patience
 
     for epoch in range(1,1001):
@@ -107,13 +106,12 @@ def main():
             emo_input = inputs_en.squeeze(1)  
             optimizer_emo.zero_grad()
             output_A, output_V, output_D, output_C = emo_net(emo_input)
-
-            loss_A = criterion_L1(output_A, scores_A)
-            loss_V = criterion_L1(output_V, scores_V)
-            loss_D = criterion_L1(output_D, scores_D)
+            loss_A = ccc_loss(output_A, scores_A)
+            loss_V = ccc_loss(output_V, scores_V)
+            loss_D = ccc_loss(output_D, scores_D)
             loss_C = criterion_cross(output_C, scores_C)
-
-            loss = loss_A + loss_V + loss_D + loss_C
+            
+            loss = loss_C + 1 - (loss_A + loss_V + loss_D )/3
 
             loss.backward()
             optimizer_emo.step()
@@ -146,11 +144,13 @@ def main():
 
             with torch.no_grad(): 
                 output_A, output_V, output_D, output_C = emo_net(emo_input)
-                loss_A = criterion_L1(output_A, scores_A)
-                loss_V = criterion_L1(output_V, scores_V)
-                loss_D = criterion_L1(output_D, scores_D)
+                loss_A = ccc_loss(output_A, scores_A)
+                loss_V = ccc_loss(output_V, scores_V)
+                loss_D = ccc_loss(output_D, scores_D)
                 loss_C = criterion_cross(output_C, scores_C)
-                loss = loss_A + loss_V + loss_D + loss_C
+                
+                loss = loss_C + 1 - (loss_A + loss_V + loss_D)/3
+
                 epoch_val_loss += loss.item()
 
         avg_val_loss=epoch_val_loss/VALSTEPS    
