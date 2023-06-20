@@ -46,7 +46,7 @@ def main():
     parser.add_argument('--datadir', default='./data',  type=str, help='Path of your DATA/ directory')
     parser.add_argument('--txtfiledir', default='./txtfile',  type=str, help='Path of your DATA/ directory')
     parser.add_argument('--finetune_from_checkpoint', type=str, required=False, help='Path to your checkpoint to finetune from')
-    parser.add_argument('--outdir', type=str, required=False, default='noise_model', help='Output directory for your trained checkpoints')
+    parser.add_argument('--outdir', type=str, required=False, default='snr_model', help='Output directory for your trained checkpoints')
 
     args = parser.parse_args()
 
@@ -56,14 +56,14 @@ def main():
     my_checkpoint_dir = args.finetune_from_checkpoint
 
     if not os.path.exists(ckptdir):
-        os.makedirs(os.path.join(ckptdir,'NOISE'))
+        os.makedirs(os.path.join(ckptdir,'SNR'))
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('DEVICE: ' + str(device))
 
     wavdir = os.path.join(datadir, '')
-    trainlist = os.path.join(txtfiledir, 'noise_train.txt')
-    validlist = os.path.join(txtfiledir, 'noise_val.txt')
+    trainlist = os.path.join(txtfiledir, 'MSP-train-with-noise-audioset.txt')
+    validlist = os.path.join(txtfiledir, 'MSP-dev-with-noise-audioset.txt')
 
     N_FFT = 400
     HOP = 100
@@ -73,29 +73,29 @@ def main():
     validset = MyNoiseDataset(wavdir, validlist)
     validloader = DataLoader(validset, batch_size=32, shuffle=True, num_workers=2, collate_fn=validset.collate_fn)
 
-    noise_net =  SNRLevelDetection(N_FFT, HOP)
-    noise_net = noise_net.to(device)
+    snr_net =  SNRLevelDetection(N_FFT, HOP)
+    snr_net = snr_net.to(device)
 
     if my_checkpoint_dir != None:  ## do (further) finetuning
-        noise_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'NOISE','best')))
+        snr_net.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'SNR','best')))
     
     #loss_criterion = nn.L1Loss()
     loss_criterion = nn.MSELoss()
 
-    optimizer_noise = optim.SGD( noise_net.parameters(), lr=0.0001, momentum=0.9)
+    optimizer_noise = optim.SGD( snr_net.parameters(), lr=0.0001, momentum=0.9)
 
     PREV_VAL_LOSS=9999999999
-    orig_patience=5
+    orig_patience=2
     patience=orig_patience
 
     for epoch in range(1,1001):
         STEPS=0
-        noise_net.train()
+        snr_net.train()
         running_loss = 0.0
 
         for i, data in enumerate(tqdm(trainloader), 0):
 
-            inputs, inputs_en, scores_level, _ = data
+            inputs, inputs_en, scores_level, wavname = data
             inputs = inputs.to(device)
             inputs_en = inputs_en.to(device)
             scores_level = scores_level.to(device)
@@ -104,9 +104,9 @@ def main():
             inputs_en = inputs_en.squeeze(1)  
             optimizer_noise.zero_grad()
 
-            noise_level = noise_net(inputs, inputs_en)
+            noise_level = snr_net(inputs, inputs_en)
             loss = loss_criterion(noise_level, scores_level)
-        
+ 
             loss.backward()
             optimizer_noise.step()
             STEPS += 1
@@ -119,7 +119,7 @@ def main():
         ## validation
         VALSTEPS=0
         epoch_val_loss = 0.0
-        noise_net.eval()
+        snr_net.eval()
         ## clear memory to avoid OOM
         with torch.cuda.device(device):
             torch.cuda.empty_cache()
@@ -136,7 +136,7 @@ def main():
             inputs_en = inputs_en.squeeze(1)
 
             with torch.no_grad(): 
-                noise_level = noise_net(inputs, inputs_en)
+                noise_level = snr_net(inputs, inputs_en)
                 loss = loss_criterion(noise_level, scores_level)
                 epoch_val_loss += loss.item()
 
@@ -145,7 +145,7 @@ def main():
         if avg_val_loss < PREV_VAL_LOSS:
             print('Loss has decreased')
             PREV_VAL_LOSS=avg_val_loss
-            torch.save(noise_net.state_dict(), os.path.join(ckptdir,'NOISE','best'))
+            torch.save(snr_net.state_dict(), os.path.join(ckptdir,'SNR','best'))
             patience = orig_patience
         else:
             patience-=1
