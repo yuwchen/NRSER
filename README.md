@@ -84,7 +84,6 @@ Testing - SNR level detection (use the SNR-level detector without fine-tuning wi
 ```
 e.g.
 python test_snr.py --datadir ./test_samples --ckptdir snr_model_r1 
-
 ```
 
 ## Evaluation code
