@@ -119,6 +119,11 @@ def main():
                 transform = torchaudio.transforms.Resample(sr, 16000)
                 wav = transform(wav)
                 sr = 16000
+                  
+            if wav.shape[0]!=1:
+                  wav = torch.mean(wav,0)                                                                                          
+                  wav = torch.reshape(wav, (1, -1))
+              
             wav = wav.to(device)
             
             en_wav = en_one_track(wav, sr, se_model, device)
