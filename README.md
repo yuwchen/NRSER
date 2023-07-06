@@ -12,7 +12,7 @@ The training, validation, and testing wavfiles list are in audioset-train-80.txt
 The excluded labels of environmental noise experiment is in human_generated_noise.csv.   
 Note: some youtube videos were not available when we downloaded the data, see the above lists for the files that used in this study.    
 
-## Data preprocessing
+## Data preprocessing & preparation
 
 (1) Generate the enhanced signals of all training data (save time for model training). 
 
@@ -64,13 +64,17 @@ audio_noisy_en/noisy_sampleA.wav
 audio_en/clean_sampleA.wav
 #enhanced wav of "audio/clean_sampleA.wav"  
 
+(3) Download SSL model 
+
+Download huber_based_ls960.pt: [HuBERT Base](https://github.com/facebookresearch/fairseq/blob/main/examples/hubert/README.md)
+
 ## Source code of NRSER
 
 Training:
 ```
-python snr_model.py           #Training phase1: training of SNR-level detection block
-python emotion_model.py       #Training phase2: training of emotion recognition block
-python nrser.py               #Training phase3: fine-tuning the model
+python snr_model.py                                                           #Training phase1: training of SNR-level detection block
+python emotion_model.py  --fairseq_base_model /path/to/hubert_base_ls960.pt   #Training phase2: training of emotion recognition block
+python nrser.py --fairseq_base_model /path/to/hubert_base_ls960.pt            #Training phase3: fine-tuning the model
 ```
 
 Testing - emotion recognition:
