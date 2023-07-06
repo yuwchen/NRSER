@@ -90,7 +90,7 @@ def main():
 
     noise_model = SNRLevelDetection(N_FFT, HOP).to(device)
     noise_model.eval()
-    noise_model.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'NOISE'+os.sep+'best')))
+    noise_model.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'SNR'+os.sep+'best')))
 
     print('Loading data')
 
