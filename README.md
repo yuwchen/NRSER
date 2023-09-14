@@ -1,5 +1,7 @@
 # NRSER
-Code for the NRSER paper
+This repo is the implementation of the paper:  
+Noise robust speech emotion recognition with signal-to-noise ratio adapting speech enhancement [[Arxiv]](https://arxiv.org/abs/2309.01164)
+
 
 ## Dataset:
 
