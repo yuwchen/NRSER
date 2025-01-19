@@ -32,8 +32,6 @@ class SNRLevelDetection(nn.Module):
         wav_spec = wav_spec.permute(0, 2, 1, 3)
 
         
-        wav_en = wav_en/max_val
-
         wav_spec_en, _, _ =  wav_conversion(wav_en, self.n_fft, self.hop)
         wav_spec_en = wav_spec_en.permute(0, 2, 1, 3)
         # output shape (N, L, H_in, real&image)
@@ -56,7 +54,7 @@ def main():
     parser.add_argument('--datadir', default='./data',  type=str, help='Path of your DATA/ directory')
     parser.add_argument('--txtfiledir', default='./txtfile',  type=str, help='Path of your DATA/ directory')
     parser.add_argument('--finetune_from_checkpoint', type=str, required=False, help='Path to your checkpoint to finetune from')
-    parser.add_argument('--outdir', type=str, required=False, default='snr_model_v3_r2', help='Output directory for your trained checkpoints')
+    parser.add_argument('--outdir', type=str, required=False, default='snr_model', help='Output directory for your trained checkpoints')
 
     args = parser.parse_args()
 
@@ -66,7 +64,7 @@ def main():
     my_checkpoint_dir = args.finetune_from_checkpoint
 
     if not os.path.exists(ckptdir):
-        os.makedirs(os.path.join(ckptdir,'NOISE'))
+        os.makedirs(os.path.join(ckptdir,'SNR'))
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('DEVICE: ' + str(device))
