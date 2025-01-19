@@ -96,7 +96,8 @@ python test_snr.py --datadir ./test_samples --ckptdir snr_model_r1
 evaluation_metric.py # to calculate Concordance Correlation Coefficient. 
 
 ## Pretrain model
-[Google Drive](https://drive.google.com/drive/folders/1cBo7ZOAGPbqZUcsZuGuJflCELpFEirM9?usp=sharing)
+Previous [Google Drive](https://drive.google.com/drive/folders/12dTsiwFuPEu7n3tKJdSdko2-CfSvYlVz?usp=sharing)
+Updated (2024) [Google Drive](https://drive.google.com/drive/folders/1cBo7ZOAGPbqZUcsZuGuJflCELpFEirM9?usp=sharing)
 
 ## Citation
 If you use the code in your research, please cite:  
