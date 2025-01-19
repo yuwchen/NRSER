@@ -74,7 +74,7 @@ def main():
 
     snr_model = SNRLevelDetection(N_FFT, HOP).to(device)
     snr_model.eval()
-    snr_model.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'SNR'+os.sep+'best')))
+    snr_model.load_state_dict(torch.load(os.path.join(my_checkpoint_dir,'NOISE'+os.sep+'best')))
 
     se_model = SpeechEnhancement(cmgan, N_FFT, HOP).to(device)
     se_model.eval()
